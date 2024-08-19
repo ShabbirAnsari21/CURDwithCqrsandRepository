@@ -1,0 +1,42 @@
+﻿name: Build and Deploy .NET Core API
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup .NET Core SDK
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '7.x.x'  # Use your .NET version
+
+    - name: Install dependencies
+      run: dotnet restore CURDWithCqrsandRepository/CURDWithCqrsandRepository.csproj
+
+    - name: Build the solution
+      run: dotnet build CURDWithCqrsandRepository/CURDWithCqrsandRepository.csproj --configuration Release --no-restore
+
+    - name: Run Tests
+      run: dotnet test CURDWithCqrsandRepository.Tests/CURDWithCqrsandRepository.Tests.csproj --no-restore --verbosity normal
+    
+    - name: Publish Web API
+      run: dotnet publish CURDWithCqrsandRepository/CURDWithCqrsandRepository.csproj -c Release -o ./publish
+
+    - name: Deploy to Azure WebApp
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'YourAppServiceName'        # Replace with your Azure WebApp name
+        slot-name: 'production'               # Replace with your slot name (e.g., production)
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        package: './publish'
