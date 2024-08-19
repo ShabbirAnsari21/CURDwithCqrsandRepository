@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/ConsoleApp1
+/CURDwithCqrsandRepository/CURDwithCqrsandRepository/obj
+/CURDwithCqrsandRepository/CURDwithCqrsandRepository.Core/obj
+/.vs
+/CURDwithCqrsandRepository/.vs
